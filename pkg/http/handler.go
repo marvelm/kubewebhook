@@ -52,9 +52,7 @@ func (h *GlobalHook) Fire(e *log.Entry) error {
 func HandlerFor(webhook webhook.Webhook) (http.Handler, error) {
 	logger := log.New()
 	logger.AddHook(&GlobalHook{})
-	if enableJSONLog == "true" {
-		logger.SetFormatter(&log.JSONFormatter{})
-	}
+	logger.SetFormatter(&log.JSONFormatter{})
 
 	if webhook == nil {
 		return nil, fmt.Errorf("webhook can't be nil")
