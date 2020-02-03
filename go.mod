@@ -1,4 +1,4 @@
-module github.com/slok/kubewebhook
+module github.com/marvelm/kubewebhook
 
 require (
 	github.com/appscode/jsonpatch v0.0.0-20180911074601-5af499cf01c8
@@ -27,3 +27,5 @@ require (
 	k8s.io/apimachinery v0.0.0-20190221084156-01f179d85dbc
 	k8s.io/client-go v2.0.0-alpha.0.0.20190528110200-4f3abb12cae2+incompatible
 )
+
+go 1.13
