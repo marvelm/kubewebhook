@@ -141,6 +141,7 @@ func (w *staticWebhook) mutatingAdmissionReview(ctx context.Context, ar *admissi
 	}
 	w.logger.Debugf("original json for request %s: %s", auid, string(origJSON))
 
+	w.logger.Debugf("mutated obj before marshalling %#v", copyObj)
 	mutatedJSON, err := json.Marshal(copyObj)
 	if err != nil {
 		return w.toAdmissionErrorResponse(ar, err)
