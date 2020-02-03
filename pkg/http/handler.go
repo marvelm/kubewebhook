@@ -13,6 +13,8 @@ import (
 
 	"github.com/slok/kubewebhook/pkg/webhook"
 	whcontext "github.com/slok/kubewebhook/pkg/webhook/context"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -31,9 +33,29 @@ func MustHandlerFor(webhook webhook.Webhook) http.Handler {
 	return h
 }
 
+type GlobalHook struct {
+}
+
+// Levels returning all log levels
+func (h *GlobalHook) Levels() []log.Level {
+	return log.AllLevels
+}
+
+// Fire adding the additional fields to all log entries
+func (h *GlobalHook) Fire(e *log.Entry) error {
+	e.Data["app"] = "vault-env"
+	return nil
+}
+
 // HandlerFor returns a new http.Handler ready to handle admission reviews using a
 // a webhook.
 func HandlerFor(webhook webhook.Webhook) (http.Handler, error) {
+	logger := log.New()
+	logger.AddHook(&GlobalHook{})
+	if enableJSONLog == "true" {
+		logger.SetFormatter(&log.JSONFormatter{})
+	}
+
 	if webhook == nil {
 		return nil, fmt.Errorf("webhook can't be nil")
 	}
@@ -56,7 +78,7 @@ func HandlerFor(webhook webhook.Webhook) (http.Handler, error) {
 			http.Error(w, "could not decode the admission review from the request", http.StatusBadRequest)
 			return
 		}
-		fmt.Printf("incoming admissionreview: %#v", ar)
+		logger.Debugf("incoming admissionreview: %#v", *ar)
 
 		// Set the admission request on the context.
 		ctx := whcontext.SetAdmissionRequest(r.Context(), ar.Request)
