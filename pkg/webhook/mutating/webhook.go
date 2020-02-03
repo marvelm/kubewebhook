@@ -127,6 +127,8 @@ func (w *staticWebhook) Review(ctx context.Context, ar *admissionv1beta1.Admissi
 func (w *staticWebhook) mutatingAdmissionReview(ctx context.Context, ar *admissionv1beta1.AdmissionReview, obj, copyObj metav1.Object) *admissionv1beta1.AdmissionResponse {
 	auid := ar.Request.UID
 
+	w.logger.Debugf("copy obj before mutation %#v", copyObj)
+
 	// Mutate the object.
 	_, err := w.mutator.Mutate(ctx, copyObj)
 	if err != nil {
