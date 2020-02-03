@@ -56,6 +56,7 @@ func HandlerFor(webhook webhook.Webhook) (http.Handler, error) {
 			http.Error(w, "could not decode the admission review from the request", http.StatusBadRequest)
 			return
 		}
+		fmt.Printf("incoming admissionreview: %#v", ar)
 
 		// Set the admission request on the context.
 		ctx := whcontext.SetAdmissionRequest(r.Context(), ar.Request)
