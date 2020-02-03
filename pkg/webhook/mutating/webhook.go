@@ -139,10 +139,13 @@ func (w *staticWebhook) mutatingAdmissionReview(ctx context.Context, ar *admissi
 		return w.toAdmissionErrorResponse(ar, err)
 
 	}
+	w.logger.Debugf("original json for request %s: %s", auid, string(origJSON))
+
 	mutatedJSON, err := json.Marshal(copyObj)
 	if err != nil {
 		return w.toAdmissionErrorResponse(ar, err)
 	}
+	w.logger.Debugf("mutated json for request %s: %s", auid, string(mutatedJSON))
 
 	patch, err := jsonpatch.CreatePatch(origJSON, mutatedJSON)
 	if err != nil {
